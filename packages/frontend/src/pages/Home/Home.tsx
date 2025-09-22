@@ -16,6 +16,8 @@ import coin from '../../assets/coin.mp3';
 import kumo from 'assets/kumo.svg';
 import { useAsync } from 'react-use';
 
+const users = [{ 1: 'user1' }, { 2: 'user2' }, { 3: 'user3' }, { 4: 'user4' }];
+
 const client = axios.create({
   baseURL: process.env.VITE_API_URL,
 });
@@ -34,6 +36,12 @@ interface ApeNFTData {
   imageIndex: number;
 }
 
+interface UserData {
+  id: string;
+  name: string;
+  score: number;
+}
+
 const ApeNFTImgs = [nft1, nft2, nft3, nft4, nft5];
 
 const randomIntFromInterval = (min: number, max: number) =>
@@ -42,34 +50,67 @@ const randomIntFromInterval = (min: number, max: number) =>
 const getNFTPrice = () => randomIntFromInterval(0, 100000);
 
 const Home = (): JSX.Element => {
-  const [score, setScore] = useState(0);
-
   const [apeNFTs, setApeNFTs] = useState<ApeNFTProps[]>([]);
+
+  const [activeUser, setActiveUser] = useState(1);
+
+  const [userData, setUserData] = useState<UserData>({
+    id: 'fake',
+    name: 'no name',
+    score: 0,
+  });
+
+  function nextUser(): number {
+    let nextUser = activeUser;
+    activeUser < 4 ? (nextUser = activeUser + 1) : (nextUser = 1);
+    return nextUser;
+  }
 
   useAsync(async () => {
     const { data } = await client.get<ApeNFTData[]>('/nfts');
+    const { data: userData } = await client.get<UserData>(
+      '/users/' + activeUser,
+    );
+    console.log(data);
+    console.log({ userData });
     setApeNFTs(
       data.map(apeNFT => ({
         ...apeNFT,
         src: ApeNFTImgs[apeNFT.imageIndex],
       })),
     );
+    if (!userData) throw new Error('Incorrect user id');
+    setUserData(userData);
   });
 
-  const buyApeNFT = async () => {
-    const { data } = await client.get<ApeNFTData>(`/nfts`);
+  const setUserScore = async (score: number) => {
+    if (!userData) throw new Error('No authentified user');
+    setUserData({ id: userData.id, name: userData.name, score: score });
+    await client.put('/users/' + userData.id, { score: score });
+  };
 
-    setApeNFTs(prevApeNFTs =>
-      prevApeNFTs.concat({ ...data, src: ApeNFTImgs[data.imageIndex] }),
+  const buyApeNFT = async () => {
+    if (!userData) throw new Error('No authentified user');
+    await client.post('/nfts');
+    const { data } = await client.get<ApeNFTData[]>(`/nfts`);
+
+    setApeNFTs(
+      data.map(apeNFT => ({
+        ...apeNFT,
+        src: ApeNFTImgs[apeNFT.imageIndex],
+      })),
     );
-    setScore(prevScore => prevScore - getNFTPrice());
+    await setUserScore(userData.score - getNFTPrice());
+    setActiveUser(nextUser);
   };
 
   const sellApeNFT = async (apeNFTId: string) => {
+    if (!userData) throw new Error('No authentified user');
     await client.delete(`/nfts/${apeNFTId}`);
 
     setApeNFTs(prevApeNFTs => prevApeNFTs.filter(({ id }) => id !== apeNFTId));
-    setScore(prevScore => prevScore + getNFTPrice());
+    setUserScore(userData.score - getNFTPrice());
+    setActiveUser(nextUser);
   };
   const audio = useAudio(coin, { volume: 0.8, playbackRate: 1 });
 
@@ -92,16 +133,16 @@ const Home = (): JSX.Element => {
           </Typography>
           <Typography
             variant="h1"
-            color={score > 0 ? 'green' : 'red'}
+            color={userData.score > 0 ? 'green' : 'red'}
             style={{
               padding: '10px',
               backgroundColor: '#f2b056',
               marginTop: '5px',
               marginBottom: '5px',
             }}
-            border={score > 0 ? '4mm solid green' : '4mm solid red'}
+            border={userData.score > 0 ? '4mm solid green' : '4mm solid red'}
           >
-            {`Score: ${score.toString().padStart(10, ' ')} $`}
+            {`Score: ${userData.score.toString().padStart(10, ' ')} $`}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -120,7 +161,9 @@ const Home = (): JSX.Element => {
               <ApeNFT
                 height="100px"
                 key={apeNFT.id}
-                {...apeNFT}
+                positionx={apeNFT.positionX}
+                positiony={apeNFT.positionY}
+                src={apeNFT.src}
                 onClick={() => {
                   sellApeNFT(apeNFT.id);
                   audio.play();
