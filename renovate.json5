@@ -1,9 +1,10 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
 
   // https://github.com/theodo/renovate-configs/blob/main/default.json5
-  "extends": ["github>victoryvergniaux-theodo/renovate-configs:default.json5"],
-  "allowIssues": false,
+  extends: ['github>victoryvergniaux-theodo/renovate-configs:default.json5'],
+  baseBranches: ['main', 'feat/nft-master'],
+  allowIssues: false,
 
-  "packageRules": [],
+  packageRules: [],
 }
