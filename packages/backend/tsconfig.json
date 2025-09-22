@@ -3,8 +3,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "esModuleInterop": true,
+    "paths" : {
+      "@libs/*": ["libs/*"]
+    },
   },
-  "include": ["./**/*.ts"],
+  
+  "include": ["**/*.ts"],
   "ts-node": {
     "files": true
   }

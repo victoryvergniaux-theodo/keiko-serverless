@@ -13,8 +13,18 @@ const table = new Table(stack, 'NFTtable', {
   removalPolicy: RemovalPolicy.DESTROY,
 });
 
+const userTable = new Table(stack, 'USERtable', {
+  partitionKey: { name: PARTITION_KEY, type: AttributeType.STRING },
+  sortKey: { name: SORT_KEY, type: AttributeType.STRING },
+  billingMode: BillingMode.PAY_PER_REQUEST,
+  removalPolicy: RemovalPolicy.DESTROY,
+});
+
 export const tableArn = stack.resolve(table.tableArn);
 export const tableName = stack.resolve(table.tableName);
+
+export const userTableArn = stack.resolve(userTable.tableArn);
+export const userTableName = stack.resolve(userTable.tableName);
 
 /**
  * Do not keep 'Rules' nor 'Parameters' to avoid the following errors (without resorting to cdk bridge plugin):
@@ -23,4 +33,6 @@ export const tableName = stack.resolve(table.tableName);
  *   Error:
  *   Unable to fetch parameters [/cdk-bootstrap/hnb659fds/version] from parameter store for this account.
  */
-export const resources = { Resources: app.synth().getStackByName(stack.stackName).template.Resources };
+export const resources = {
+  Resources: app.synth().getStackByName(stack.stackName).template.Resources,
+};

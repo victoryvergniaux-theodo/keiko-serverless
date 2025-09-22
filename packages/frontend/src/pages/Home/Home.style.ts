@@ -9,16 +9,15 @@ const BackgroundPaper = styled(Paper)`
 `;
 
 interface ApeNFTProps {
-  id: string;
-  positionX: number;
-  positionY: number;
+  positionx: number;
+  positiony: number;
   src: string;
 }
 
 const ApeNFT = styled('img')<ApeNFTProps>`
   position: absolute;
-  top: ${props => props.positionY}%;
-  left: ${props => props.positionX}%;
+  top: ${props => props.positiony}%;
+  left: ${props => props.positionx}%;
   border-radius: 50%;
   cursor: not-allowed;
 `;
