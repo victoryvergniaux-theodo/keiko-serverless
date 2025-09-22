@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:  # TEMPORARY: so it runs on your feature branch
     branches:
-      - feat/nft-master
+      - main
 
 permissions:
   contents: write
