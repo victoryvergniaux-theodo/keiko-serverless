@@ -26,4 +26,4 @@ jobs:
           args: >
             --platform=github
             --token=${{ secrets.GITHUB_TOKEN }}
-            your-org/your-repo
+            victoryvergniaux-theodo/keiko-serverless
