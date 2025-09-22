@@ -25,6 +25,6 @@ jobs:
         with:
           args: >
             --platform=github
-            --base-branches=feat/nft-master
             --token=${{ secrets.GITHUB_TOKEN }}
+            --base-branches=feat/nft-master
             victoryvergniaux-theodo/keiko-serverless
