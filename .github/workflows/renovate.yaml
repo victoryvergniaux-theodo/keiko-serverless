@@ -10,6 +10,7 @@ on:
   push:  # TEMPORARY: so it runs on your feature branch
     branches:
       - main
+      - fix/renovate-tests #comment to trigger
 
 permissions:
   contents: write
