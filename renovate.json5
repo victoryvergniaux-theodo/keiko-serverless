@@ -3,7 +3,7 @@
 
   // https://github.com/theodo/renovate-configs/blob/main/default.json5
   extends: ['github>victoryvergniaux-theodo/renovate-configs:default.json5'],
-  baseBranches: ['main', 'feat/nft-master'],
+  baseBranches: ['feat/nft-master'],
   allowIssues: false,
 
   packageRules: [],
