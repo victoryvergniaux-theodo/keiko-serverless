@@ -1,0 +1,29 @@
+name: Renovate
+
+env:
+  LOG_LEVEL: debug
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+  push:  # TEMPORARY: so it runs on your feature branch
+    branches:
+      - feat/nft-master
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Renovate
+        uses: docker://renovate/renovate:latest
+        with:
+          args: >
+            --platform=github
+            --token=${{ secrets.GITHUB_TOKEN }}
+            your-org/your-repo
