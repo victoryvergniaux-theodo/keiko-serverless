@@ -4,5 +4,6 @@
   // https://github.com/theodo/renovate-configs/blob/main/default.json5
   extends: ['github>victoryvergniaux-theodo/renovate-configs:default.json5'],
 
+  // comment so i can push
   packageRules: [],
 }
